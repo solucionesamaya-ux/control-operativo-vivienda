@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Control operativo · Secretaría de Vivienda</title>
+<meta name="description" content="Panel de seguimiento contractual · Gobernación de Cundinamarca">
+<meta name="theme-color" content="#004884">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Control operativo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="referrer" content="no-referrer">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icono-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  :root{--gov:#004884;--gov2:#3366CC;--texto:#1D1D1F;--sec:#5B5B60}
+  *{box-sizing:border-box}
+  html{background:#fff linear-gradient(180deg,#EAF2FB 0,#F4F8FD 55%,#fff 100%) no-repeat;min-height:100%}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;color:var(--texto)}
+  main{width:min(440px,100%);background:#fff;border-radius:28px;padding:36px 28px 28px;text-align:center;
+    box-shadow:0 1px 2px rgba(16,24,40,.04),0 18px 48px rgba(0,72,132,.12)}
+  img.logo{width:132px;height:132px;border-radius:50%;box-shadow:0 10px 30px rgba(0,72,132,.25);display:block;margin:0 auto 20px}
+  .ent{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gov)}
+  h1{margin:6px 0 4px;font-size:28px;letter-spacing:-.02em;line-height:1.15}
+  .sub{margin:0 0 24px;color:var(--sec);font-size:15px;line-height:1.45}
+  a.boton{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:26px;background:var(--gov);
+    color:#fff;text-decoration:none;font-weight:600;font-size:17px}
+  a.boton:hover{background:#00396a}
+  .ayuda{margin:22px 0 0;padding:16px;border-radius:16px;background:#F2F6FC;text-align:left;font-size:14px;line-height:1.5;color:#2c2c30}
+  .ayuda b{color:var(--gov)}
+  .ayuda p{margin:0 0 6px}
+  .aviso{margin:0 0 20px;padding:14px;border-radius:14px;background:#FFF1E0;color:#9A4A00;font-size:14px;line-height:1.45}
+  footer{margin-top:20px;font-size:12px;color:var(--sec)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="logo-escudo.png" alt="Escudo de la Gobernación de Cundinamarca">
+  <p class="ent">Gobernación de Cundinamarca</p>
+  <h1>Control operativo</h1>
+  <p class="sub">Contratación · Secretaría de Hábitat y Vivienda Social</p>
+  <p id="sin-enlace" class="aviso" hidden>Para entrar necesita su enlace personal. Ábralo desde el correo o el mensaje en que lo recibió.</p>
+  <a id="entrar" class="boton" href="#" hidden>Entrar al panel</a>
+  <div id="ayuda" class="ayuda" hidden>
+    <p><b>Para tenerlo en la pantalla de inicio:</b></p>
+    <p>iPhone (Safari): botón Compartir → «Agregar a pantalla de inicio».</p>
+    <p>Android (Chrome): menú ⋮ → «Agregar a la pantalla principal» o «Instalar app».</p>
+  </div>
+  <footer>Solo lectura · uso interno de la entidad</footer>
+</main>
+<script>
+(function () {
+  // El enlace personal llega después de "#" (el navegador no se lo envía a GitHub) y se guarda solo en este dispositivo,
+  // para que al abrir desde la pantalla de inicio el panel entre directo.
+  var PERMITIDO = /^https:\/\/script\.google\.com\/(a\/[^\/]+\/)?macros\/s\/[A-Za-z0-9_-]+\/exec(\?k=[A-Za-z0-9_-]+)?$/;
+  var app = null;
+  try {
+    var m = location.hash.match(/(?:^#|&)app=([^&]+)/);
+    if (m) { var u = decodeURIComponent(m[1]); if (PERMITIDO.test(u)) { app = u; localStorage.setItem('panel', u); } }
+    if (!app) { var g = localStorage.getItem('panel'); if (g && PERMITIDO.test(g)) app = g; }
+  } catch (e) {}
+  var instalada = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  if (!app) { document.getElementById('sin-enlace').hidden = false; return; }
+  if (instalada) { location.replace(app); return; }
+  var b = document.getElementById('entrar');
+  b.href = app; b.hidden = false;
+  document.getElementById('ayuda').hidden = false;
+})();
+</script>
+</body>
+</html>
