@@ -33,6 +33,9 @@
   .ayuda b{color:var(--gov)}
   .ayuda p{margin:0 0 6px}
   .aviso{margin:0 0 20px;padding:14px;border-radius:14px;background:#FFF1E0;color:#9A4A00;font-size:14px;line-height:1.45}
+  input{width:100%;min-height:50px;border-radius:14px;border:1.5px solid #C9D7EE;padding:0 14px;font-size:16px;margin:0 0 12px}
+  button.boton{width:100%;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:26px;background:var(--gov);color:#fff;font-weight:600;font-size:17px;font-family:inherit}
+  .error{margin:-4px 0 12px;color:#B42318;font-size:13px;text-align:left}
   footer{margin-top:20px;font-size:12px;color:var(--sec)}
   [hidden]{display:none!important}
 </style>
@@ -43,10 +46,15 @@
   <p class="ent">Gobernación de Cundinamarca</p>
   <h1>Control operativo</h1>
   <p class="sub">Contratación · Secretaría de Hábitat y Vivienda Social</p>
-  <p id="sin-enlace" class="aviso" hidden>Para entrar necesita su enlace personal. Ábralo desde el correo o el mensaje en que lo recibió.</p>
+  <form id="sin-enlace" hidden>
+    <p class="aviso">Pegue aquí el enlace con el que entra al panel (empieza con https://script.google.com/…).</p>
+    <input id="pegar" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/…/exec" aria-label="Enlace del panel">
+    <p id="error" class="error" hidden>Ese enlace no es del panel. Debe empezar con https://script.google.com/ y terminar en /exec (o /exec?k=…).</p>
+    <button class="boton" type="submit">Guardar mi enlace</button>
+  </form>
   <a id="entrar" class="boton" href="#" hidden>Entrar al panel</a>
   <div id="ayuda" class="ayuda" hidden>
-    <p><b>Para tenerlo en la pantalla de inicio:</b></p>
+    <p><b>Ahora agréguelo a la pantalla de inicio:</b></p>
     <p>iPhone (Safari): botón Compartir → «Agregar a pantalla de inicio».</p>
     <p>Android (Chrome): menú ⋮ → «Agregar a la pantalla principal» o «Instalar app».</p>
   </div>
@@ -64,7 +72,18 @@
     if (!app) { var g = localStorage.getItem('panel'); if (g && PERMITIDO.test(g)) app = g; }
   } catch (e) {}
   var instalada = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
-  if (!app) { document.getElementById('sin-enlace').hidden = false; return; }
+  if (!app) {
+    var f = document.getElementById('sin-enlace'); f.hidden = false;
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var u = document.getElementById('pegar').value.trim();
+      if (!PERMITIDO.test(u)) { document.getElementById('error').hidden = false; return; }
+      // Queda en la dirección de la página: así «Agregar a pantalla de inicio» lo guarda con el ícono.
+      location.replace(location.pathname + '#app=' + encodeURIComponent(u));
+      location.reload();
+    });
+    return;
+  }
   if (instalada) { location.replace(app); return; }
   var b = document.getElementById('entrar');
   b.href = app; b.hidden = false;
