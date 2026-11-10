@@ -64,7 +64,8 @@
 (function () {
   // El enlace personal llega después de "#" (el navegador no se lo envía a GitHub) y se guarda solo en este dispositivo,
   // para que al abrir desde la pantalla de inicio el panel entre directo.
-  var PERMITIDO = /^https:\/\/script\.google\.com\/(a\/[^\/]+\/)?macros\/s\/[A-Za-z0-9_-]+\/exec(\?k=[A-Za-z0-9_-]+)?$/;
+  // Enlaces del panel: /macros/s/…/exec, /a/macros/<dominio>/s/…/exec o /a/<dominio>/macros/s/…/exec, con ?k= opcional.
+  var PERMITIDO = /^https:\/\/script\.google\.com\/(macros|a\/macros\/[A-Za-z0-9.-]+|a\/[A-Za-z0-9.-]+\/macros)\/s\/[A-Za-z0-9_-]+\/exec(\?k=[A-Za-z0-9_-]+)?$/;
   var app = null;
   try {
     var m = location.hash.match(/(?:^#|&)app=([^&]+)/);
